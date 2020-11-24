@@ -1,9 +1,31 @@
-from django.db import models
-from django.contrib.auth.models import User
-from django.utils.translation import gettext as _
-# import secrets
-import random as secrets  # BUG - Necessary for PYTHON <3.6
+# ManikAlbum, an online collaborative editor of family photo albums
+#    Copyright (C) 2020  Manik Bhattacharjee <manik.bhattacharjee <at> free.fr>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, version 3 of the
+#    License.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#from django.contrib.auth.models import User
+from django.utils.translation import gettext as _
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+# import secrets
+import random as secrets  # FIXME BUG - Necessary for PYTHON <3.6
+
+class User(AbstractUser):
+    description = models.TextField(max_length=1000)
+    personalUrl = models.URLField()
+    pass
 
 class Timestamp(models.Model):
     YEAR = 'year'
@@ -49,8 +71,18 @@ class Photo(models.Model):
 
 
 class Album(models.Model):
+    """
+    Define a photo album, which is a collection of photos
+
+    It has metadata (name, description, location, datetime)
+    It has access rights: an owner (creator) and members with Permissions
+     e.g. (Read-only, add-only, read-write, admin)
+    """
+    public = models.BooleanField(null=False, default=False)  # Anonymous user has read access
     urlkey = models.CharField(null=True, max_length=30)  # If generated, key used for sharing the photo as a URL
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="owner")
+    admins = models.ManyToManyField(User, related_name="admins")
+    members = models.ManyToManyField(User, related_name="members")
     # Content
     photos = models.ManyToManyField(Photo)
     # Metadata

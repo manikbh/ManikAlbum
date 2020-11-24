@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="{% get_current_language as LANGUAGE_CODE %}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "My albums" %}</title>
+</head>
+<body>
+{% if user.is_authenticated %}
+    <p>{% trans "Bienvenue" %} {{ user.get_username }}. </p>
+    {% if album_list %}
+        <ul>
+        {% for album in album_list %}
+            <li><a href="/albums/album/{{ album.id }}/">{{ album.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>{% trans "No Album available in your account." %}</p>
+    {% endif %}
+
+{% else %}
+<p>{% blocktrans %}"You are not logged in. Please <a href="/connect">connect</a> or create an account !" {% endblocktrans %} {{ user.get_username }}. </p>
+
+{% endif %}
+</body>
+</html>

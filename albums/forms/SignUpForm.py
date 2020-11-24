@@ -14,8 +14,26 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from django.apps import AppConfig
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.db import transaction
 
+from albums.models import User
 
-class AlbumsConfig(AppConfig):
-    name = 'albums'
+class StudentSignUpForm(UserCreationForm):
+    # interests = forms.ModelMultipleChoiceField(
+    #     queryset=Subject.objects.all(),
+    #     widget=forms.CheckboxSelectMultiple,
+    #     required=True
+    # )
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+
+    @transaction.atomic
+    def save(self):
+        user = super().save(commit=False)
+        user.save()
+        # student = Student.objects.create(user=user)
+        # student.interests.add(*self.cleaned_data.get('interests'))
+        return user

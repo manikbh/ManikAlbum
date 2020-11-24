@@ -1,0 +1,22 @@
+
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}ManikAlbum{% endblock %}</title>
+    <link rel="icon" href="{% static 'img/favicon.png' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+  </head>
+  <body>
+
+      {% if user.is_authenticated %}
+        <p>Logged in as <strong>{{ user.username }}</strong>. <a href="{% url 'logout' %}">Log out</a>.</p>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn btn-light" role="button">Log in</a>
+        <a href="{% url 'signup' %}" class="btn btn-primary" role="button">Sign up</a>
+      {% endif %}
+
+  </body>
+</html>
