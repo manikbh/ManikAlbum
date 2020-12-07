@@ -16,4 +16,9 @@
 
 from django.contrib import admin
 
-# Register your models here.
+from .models import User, Photo, Album, Location, Person, PersonPresence, Metadata, LocationPresence, PhotoIndex
+
+class AdminWithID(admin.ModelAdmin):
+    readonly_fields = ('id',)
+
+admin.site.register([User, Photo, Album, Location, Person, PersonPresence, Metadata, LocationPresence,PhotoIndex],AdminWithID)

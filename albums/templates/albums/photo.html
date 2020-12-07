@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="{% get_current_language as LANGUAGE_CODE %}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "Photo-" %}{{photo.pk}}</title>
+</head>
+<body>
+Check access: urlKey or owner or in the authorized list
+{% if user.is_authenticated %}
+    <div class="photo">
+        <img class="photo_img" src="{{photo.filename.url}}" width="20%" alt="{{photo.metadata.name}}"/>
+        <div class="photo_name"><label>Title:</label>{{photo.metadata.name}}</div>
+        <div class="photo_desc"><label>Description:</label>{{photo.metadata.description}}</div>
+        <div class="photo_timestamp"><label>Date:</label>{{photo.metadata.timestamp.date}}</div>
+        <div class="photo_locations">
+            <label>Location:</label>
+            {% for loca in photo.metadata.location_set.all %}
+            <div class="photo_location">{{loca.name}}</div>
+            {% endfor %}
+        </div>
+        <div class="photo_persons">
+            <label>People:</label>
+            {% for person in photo.metadata.persons_set.all %}
+                <div class="photo_person">{{person.name}}</div>
+            {% endfor %}
+        </div>
+
+    </div>
+{% else %}
+    <p class="error">Not authenticated !</p>
+{% endif %}
+</body>
+</html>

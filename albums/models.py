@@ -20,12 +20,14 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # import secrets
-import random as secrets  # FIXME BUG - Necessary for PYTHON <3.6
+import secrets
 
 class User(AbstractUser):
-    description = models.TextField(max_length=1000)
-    personalUrl = models.URLField()
-    pass
+    description = models.TextField(max_length=1000,blank=True,null=True)
+    personalUrl = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return AbstractUser.__str__(self)
 
 class Timestamp(models.Model):
     YEAR = 'year'
@@ -43,32 +45,88 @@ class Timestamp(models.Model):
         choices=PRECISION,
         default=SECOND,
     )
+    datetime = models.DateTimeField
 
+    def __str__(self):
+        return str(self.datetime)
+
+class Person(models.Model):
+    user =  models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    shortName = models.CharField(max_length=20)
+    fullName = models.CharField(null=True, max_length=20, blank=True)
+    birthDate = models.DateField(null=True, blank=True)
+    deathDate = models.DateField(null = True, blank=True)
+
+    def __str__(self):
+        return self.shortName
+
+
+class Metadata(models.Model):
+    timestamp = Timestamp()
+    name = models.CharField(blank =True, max_length=50, )
+    description = models.TextField(blank=True, max_length=10000)
+    #TODO Exif metadata fields ? Class EXIF from django-exiffield ?
+    persons = models.ManyToManyField(Person, through='PersonPresence')
+    locations = models.ManyToManyField('Location', through='LocationPresence')
+    def __str__(self):
+        return "Meta: " + self.name
+
+class PersonPresence(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.SET_NULL, blank=True, null=True) #blank -> there is someone unknown
+    metadata = models.ForeignKey(Metadata, on_delete=models.CASCADE)
+    x = models.FloatField(blank = False, default=0.0)
+    y = models.FloatField(blank = False, default=0.0)
+    w = models.FloatField(blank = False, default=1.0)
+    h = models.FloatField(blank = False, default=1.0)
+    tStart = models.TimeField(blank = True, null=True)
+    tEnds = models.TimeField(blank = True, null=True)
+
+    def __str__(self):
+        return self.person.shortName + " present in " + self.metadata.name
 
 class Location(models.Model):
-    name = models.CharField(null=True, max_length=50,)
-    description = models.TextField(null=True, max_length=10000)
-    coords = models.CharField(null=True, max_length=30)  # GPS coords
-    osmObject = models.CharField(null=True, max_length=30)  # OpenStreetMap object ID (city...)
+    name = models.CharField( max_length=50,null=True)
+    description = models.TextField(blank=True, max_length=10000, null=True)
+    parentLocation = models.OneToOneField('Location', on_delete=models.SET_NULL, blank=True, null=True)
+    coords = models.CharField(blank=True, max_length=100, null=True)  # GPS coords TODO GeoDjango ?
+    osmObject = models.CharField(blank=True, max_length=100, null=True)  # OpenStreetMap object ID (city...)
+    def __str__(self):
+        return self.name
 
+class LocationPresence(models.Model):
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=False)
+    metadata = models.ForeignKey(Metadata, on_delete=models.CASCADE, blank=False)
+    tStart = models.TimeField(blank=True,null=True)
+    tEnds = models.TimeField(blank=True,null=True)
 
-class PhotoMetadata(models.Model):
-    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True)
-    timestamp = Timestamp()
+    def __str__(self):
+        return self.location.name + " is location for " + self.metadata.name
 
+def generateRandomKey():
+    return secrets.token_hex(10)
 
-# Create your models here.
 class Photo(models.Model):
-    urlkey = models.CharField(null=True, max_length=30)  # If generated, key used for sharing the photo as a URL
+    urlkey = models.CharField(null=True, max_length=30,default=generateRandomKey)  # If generated, key used for sharing the photo as a URL
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     filename = models.ImageField()
-    models.OneToOneField(PhotoMetadata, on_delete=models.SET_NULL, null=True, blank=True)
+    thumbnail = models.ImageField(blank=True,null=True)
+    metadata = models.OneToOneField(Metadata, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.filename.name
 
     @staticmethod
     def generateFileName(name="DSC.jpg"):
         """Returns a random-prefixed file name from the uploaded file name"""
-        return secrets.token_hex(10) + '_' + name
+        return generateRandomKey() + '_' + name
 
+class PhotoIndex(models.Model):
+    album = models.ForeignKey("Album",on_delete=models.CASCADE)
+    photo = models.ForeignKey(Photo,on_delete=models.CASCADE)
+    index = models.IntegerField()
+
+    class Meta:
+        unique_together = (("album", "photo", "index"),)
 
 class Album(models.Model):
     """
@@ -79,15 +137,18 @@ class Album(models.Model):
      e.g. (Read-only, add-only, read-write, admin)
     """
     public = models.BooleanField(null=False, default=False)  # Anonymous user has read access
-    urlkey = models.CharField(null=True, max_length=30)  # If generated, key used for sharing the photo as a URL
+    urlkey = models.CharField(null=True, max_length=30,default=generateRandomKey)  # If generated, key used for sharing the photo as a URL
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="owner")
     admins = models.ManyToManyField(User, related_name="admins")
     members = models.ManyToManyField(User, related_name="members")
     # Content
-    photos = models.ManyToManyField(Photo)
+    photos = models.ManyToManyField(Photo, through=PhotoIndex)
     # Metadata
     name = models.CharField(null=True, max_length=150)
     description = models.TextField(null=True, max_length=10000)
     location = models.ManyToManyField(Location)
     startTime = Timestamp()
     endTime = Timestamp()
+
+    def __str__(self):
+        return "Album " + self.name

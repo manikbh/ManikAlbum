@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="{% get_current_language as LANGUAGE_CODE %}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "My albums" %}</title>
+</head>
+<body>
+Check access: urlKey or owner or in the authorized list
+{% if user.is_authenticated and user.pk == album.owner.pk %}
+    <div class="thumbnails">
+        {% for photo in album.photos.all %}
+        <p>
+            <a href="{% url 'photoview' photo.id %}">
+            {% if photo.thumbnail %}
+                <img class="thumbnail" src="{{photo.thumbnail.url}}" width="20%" alt="{{photo.metadata.name}}"/>
+            {% else %}
+                <img class="thumbnail" src="{{photo.filename.url}}" width="20%" alt="{{photo.metadata.name}}"/>
+            {% endif %}
+            <div class="thumbnail_name">{{photo.metadata.name}}</div>
+            </a>
+        </p>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="error">Not authenticated !</p>
+{% endif %}
+</body>
+</html>
