@@ -29,26 +29,6 @@ class User(AbstractUser):
     def __str__(self):
         return AbstractUser.__str__(self)
 
-class Timestamp(models.Model):
-    YEAR = 'year'
-    MONTH = 'month'
-    DAY = 'day'
-    SECOND = 'second'
-    PRECISION = [
-        (YEAR, _('year')),
-        (MONTH, _('month')),
-        (DAY, _('day')),
-        (SECOND, _('second')),
-    ]
-    status = models.CharField(
-        max_length=10,
-        choices=PRECISION,
-        default=SECOND,
-    )
-    datetime = models.DateTimeField
-
-    def __str__(self):
-        return str(self.datetime)
 
 class Person(models.Model):
     user =  models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -62,11 +42,27 @@ class Person(models.Model):
 
 
 class Metadata(models.Model):
-    timestamp = Timestamp()
+    YEAR = 'year'
+    MONTH = 'month'
+    DAY = 'day'
+    SECOND = 'second'
+    PRECISION = [
+        (YEAR, _('year')),
+        (MONTH, _('month')),
+        (DAY, _('day')),
+        (SECOND, _('second')),
+    ]
+    timedetail = models.CharField(
+        max_length=10,
+        choices=PRECISION,
+        default=SECOND,
+    )
+    timestamp = models.DateTimeField(blank=True, null=True)
+    #timestamp = models.OneToOneField(Timestamp, null=True, blank=True,on_delete=models.SET_NULL)
     name = models.CharField(blank =True, max_length=50, )
     description = models.TextField(blank=True, max_length=10000)
     #TODO Exif metadata fields ? Class EXIF from django-exiffield ?
-    persons = models.ManyToManyField(Person, through='PersonPresence')
+    persons = models.ManyToManyField('Person', through='PersonPresence')
     locations = models.ManyToManyField('Location', through='LocationPresence')
     def __str__(self):
         return "Meta: " + self.name
@@ -147,8 +143,8 @@ class Album(models.Model):
     name = models.CharField(null=True, max_length=150)
     description = models.TextField(null=True, max_length=10000)
     location = models.ManyToManyField(Location)
-    startTime = Timestamp()
-    endTime = Timestamp()
+    startTime = models.DateField(null=True, blank=True)
+    endTime = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return "Album " + self.name

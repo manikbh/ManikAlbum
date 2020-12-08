@@ -21,7 +21,7 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 
-from .models import Album, User, Photo
+from .models import Album, User, Photo, Location, Person
 from .forms import SignUpForm
 
 
@@ -132,3 +132,12 @@ class AlbumDetailView(DetailView):
 class PhotoDetailView(DetailView):
     model = Photo
     template_name = "albums/photo.html"
+
+class LocationDetailView(DetailView):
+    model = Location
+    template_name = "albums/location.html"
+
+class PersonDetailView(DetailView):
+    model = Person
+    template_name = "albums/person.html"
+

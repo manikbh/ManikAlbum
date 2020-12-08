@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="{% get_current_language as LANGUAGE_CODE %}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "Person-" %}{{person.pk}}</title>
+</head>
+<body>
+Check access: urlKey or owner or in the authorized list
+{% if user.is_authenticated %}
+    <div class="person">
+        <div class="person_shortname">{{person.shortName}}</div>
+        {% if person.fullName %}
+        <div class="person_fullname"><label>Full name:</label> {{person.fullName}}</div>
+        {% endif %}
+        {% if person.birthDate %}
+        <div class="person_birthdate"><label>Birth:</label> {{person.birthDate}}</div>
+        {% endif %}
+        {% if person.deathDate %}
+        <div class="person_fullname"><label>Death:</label> {{person.deathDate}}</div>
+        {% endif %}
+        {% if person.fullName %}
+        <div class="person_user"><label>User:</label> {{person.user}}</div>
+        {% endif %}
+    </div>
+{% else %}
+    <p class="error">Not authenticated !</p>
+{% endif %}
+</body>
+</html>

@@ -31,9 +31,10 @@ urlpatterns = [
     path('albumview/<int:pk>/', views.AlbumDetailView.as_view(), name='albumview'),
     path('albumview/<int:album_id>/<int:photo_index>/', views.albumView, name='albumviewphoto'),
     path('albumedit/<int:album_id>/', views.albumEdit, name='albumEdit'),
-    path('peopleview/<int:person_id>/', views.peopleView, name='peopleView'),
-    path('peopleedit/<int:person_id>/', views.peopleEdit, name='peopleEdit'),
-    path('locationedit', views.locationEdit, name='locationEdit'),
+    path('personview/<int:pk>/', views.PersonDetailView.as_view(), name='personview'),
+    path('personedit/<int:person_id>/', views.peopleEdit, name='personedit'),
+    path('locationview/<int:pk>/', views.LocationDetailView.as_view(), name='locationview'),
+    path('locationedit/<int:pk>/', views.locationEdit, name='locationedit'),
 ]
 
 from django.conf import settings

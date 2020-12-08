@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="{% get_current_language as LANGUAGE_CODE %}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "Location-" %}{{location.pk}}</title>
+</head>
+<body>
+Check access: urlKey or owner or in the authorized list
+{% if user.is_authenticated %}
+    <div class="location">
+        <div class="location_name"><label>Name:</label>{{location.name}}</div>
+        {% if location.description %}
+        <div class="location_description"><label>Description:</label> {{location.description}}</div>
+        {% endif %}
+        {% if location.parentLocation %}
+        <div class="location_parentlocation"><label>Parent location</label> <a href="{%url 'locationview' location.parentLocation.pk %}">{{location.parentLocation.name}}</a></div>
+        {% endif %}
+        {% if location.coords %}
+        <div class="location_coords"><label>GPS:</label> {{location.coords}}</div>
+        {% endif %}
+        {% if location.osmObject %}
+        <div class="location_osmObject"><a href="{{location.osmObject}}">OpenStreetMap</a></div>
+        {% endif %}
+    </div>
+{% else %}
+    <p class="error">Not authenticated !</p>
+{% endif %}
+</body>
+</html>

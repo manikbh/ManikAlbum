@@ -21,4 +21,5 @@ from .models import User, Photo, Album, Location, Person, PersonPresence, Metada
 class AdminWithID(admin.ModelAdmin):
     readonly_fields = ('id',)
 
-admin.site.register([User, Photo, Album, Location, Person, PersonPresence, Metadata, LocationPresence,PhotoIndex],AdminWithID)
+admin.site.register([User, Photo, Album, Location, Person, PersonPresence,
+                     Metadata, LocationPresence,PhotoIndex],AdminWithID)

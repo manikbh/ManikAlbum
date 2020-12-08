@@ -15,14 +15,14 @@ Check access: urlKey or owner or in the authorized list
         <div class="photo_timestamp"><label>Date:</label>{{photo.metadata.timestamp.date}}</div>
         <div class="photo_locations">
             <label>Location:</label>
-            {% for loca in photo.metadata.location_set.all %}
-            <div class="photo_location">{{loca.name}}</div>
+            {% for loca in photo.metadata.locations.all %}
+            <div class="photo_location"><a href="{% url 'locationview' loca.pk %}">{{loca.name}}</a></div>
             {% endfor %}
         </div>
         <div class="photo_persons">
             <label>People:</label>
-            {% for person in photo.metadata.persons_set.all %}
-                <div class="photo_person">{{person.name}}</div>
+            {% for person in photo.metadata.persons.all %}
+            <div class="photo_person"><a href="{% url 'personview' person.pk %}">{{person.shortName}}</a></div>
             {% endfor %}
         </div>
 
