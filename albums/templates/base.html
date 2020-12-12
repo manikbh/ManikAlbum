@@ -1,15 +1,16 @@
-{% load static %}
 <!doctype html>
-<html lang="en">
+{% load i18n %}
+<html lang="{% get_current_language as LANGUAGE_CODE %}">
+{% load static %}
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}ManikAlbum{% endblock %}</title>
-    <link rel="icon" href="{% static 'img/favicon.png' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" href="{% static 'albums/images/favicon.ico' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'albums/style.css' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'albums/images/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'albums/images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'albums/images/favicon-16x16.png' %}">
   </head>
   <body>
 

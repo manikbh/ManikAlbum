@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 {% load i18n %}
+{% load static %}
 <html lang="{% get_current_language as LANGUAGE_CODE %}">
 <head>
     <meta charset="UTF-8">
     <title>{% trans "My albums" %}</title>
+    <link rel="icon" href="{% static 'albums/images/favicon.ico' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'albums/style.css' %}">
 </head>
 <body>
 {% if user.is_authenticated %}
@@ -22,5 +25,6 @@
 <p>{% blocktrans %}"You are not logged in. Please <a href="/connect">connect</a> or create an account !" {% endblocktrans %} {{ user.get_username }}. </p>
 
 {% endif %}
+<div class="test-style-album">Testing style</div>
 </body>
 </html>

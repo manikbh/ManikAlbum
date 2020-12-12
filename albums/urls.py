@@ -37,8 +37,8 @@ urlpatterns = [
     path('locationedit/<int:pk>/', views.locationEdit, name='locationedit'),
 ]
 
-from django.conf import settings
-from django.conf.urls.static import static
-if settings.DEBUG:
-        urlpatterns += static(settings.MEDIA_URL,
-                              document_root=settings.MEDIA_ROOT)
+# from django.conf import settings
+# from django.conf.urls.static import static
+# from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+# if settings.DEBUG:
+#         urlpatterns += staticfiles_urlpatterns("albums/")
