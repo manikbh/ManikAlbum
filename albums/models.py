@@ -18,6 +18,7 @@
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 
 # import secrets
 import secrets
@@ -36,6 +37,9 @@ class Person(models.Model):
     fullName = models.CharField(null=True, max_length=20, blank=True)
     birthDate = models.DateField(null=True, blank=True)
     deathDate = models.DateField(null = True, blank=True)
+
+    def get_absolute_url(self):
+        return reverse('personview', args=[str(self.id)])
 
     def __str__(self):
         return self.shortName
@@ -86,6 +90,10 @@ class Location(models.Model):
     parentLocation = models.OneToOneField('Location', on_delete=models.SET_NULL, blank=True, null=True)
     coords = models.CharField(blank=True, max_length=100, null=True)  # GPS coords TODO GeoDjango ?
     osmObject = models.CharField(blank=True, max_length=100, null=True)  # OpenStreetMap object ID (city...)
+
+    def get_absolute_url(self):
+        return reverse('locationview', args=[str(self.id)])
+
     def __str__(self):
         return self.name
 
@@ -102,11 +110,15 @@ def generateRandomKey():
     return secrets.token_hex(10)
 
 class Photo(models.Model):
-    urlkey = models.CharField(null=True, max_length=30,default=generateRandomKey)  # If generated, key used for sharing the photo as a URL
+    # If generated, key used for sharing the photo as a URL
+    urlkey = models.CharField(null=True, max_length=30,default=generateRandomKey)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     filename = models.ImageField()
     thumbnail = models.ImageField(blank=True,null=True)
     metadata = models.OneToOneField(Metadata, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('photoview', args=[str(self.id)])
 
     def __str__(self):
         return self.filename.name
@@ -133,7 +145,8 @@ class Album(models.Model):
      e.g. (Read-only, add-only, read-write, admin)
     """
     public = models.BooleanField(null=False, default=False)  # Anonymous user has read access
-    urlkey = models.CharField(null=True, max_length=30,default=generateRandomKey)  # If generated, key used for sharing the photo as a URL
+    # If generated, key used for sharing the photo as a URL
+    urlkey = models.CharField(null=True, max_length=30, default=generateRandomKey)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="owner")
     admins = models.ManyToManyField(User, related_name="admins")
     members = models.ManyToManyField(User, related_name="members")
@@ -146,5 +159,11 @@ class Album(models.Model):
     startTime = models.DateField(null=True, blank=True)
     endTime = models.DateField(null=True, blank=True)
 
+    def get_absolute_url(self):
+        return reverse('albumview', args=[str(self.id)])
+
     def __str__(self):
         return "Album " + self.name
+
+
+# TODO Add lock model with user, datetime info that can be applied to album, photo, metadata, location or person
