@@ -33,8 +33,10 @@ urlpatterns = [
     path('albumedit/<int:album_id>/', views.albumEdit, name='albumEdit'),
     path('personview/<int:pk>/', views.PersonDetailView.as_view(), name='personview'),
     path('personedit/<int:person_id>/', views.peopleEdit, name='personedit'),
+    path('personcreate/', views.PersonCreateView.as_view(), name='personcreate'),
     path('locationview/<int:pk>/', views.LocationDetailView.as_view(), name='locationview'),
     path('locationedit/<int:pk>/', views.locationEdit, name='locationedit'),
+    path('locationcreate/', views.LocationCreateView.as_view(), name='locationcreate'),
 ]
 
 # from django.conf import settings

@@ -87,7 +87,7 @@ class PersonPresence(models.Model):
 class Location(models.Model):
     name = models.CharField( max_length=50,null=True)
     description = models.TextField(blank=True, max_length=10000, null=True)
-    parentLocation = models.OneToOneField('Location', on_delete=models.SET_NULL, blank=True, null=True)
+    parentLocation = models.ForeignKey('Location', on_delete=models.SET_NULL, blank=True, null=True)
     coords = models.CharField(blank=True, max_length=100, null=True)  # GPS coords TODO GeoDjango ?
     osmObject = models.CharField(blank=True, max_length=100, null=True)  # OpenStreetMap object ID (city...)
 

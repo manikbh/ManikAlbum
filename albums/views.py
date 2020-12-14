@@ -141,3 +141,27 @@ class PersonDetailView(DetailView):
     model = Person
     template_name = "albums/person.html"
 
+
+# Forms
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class LocationCreateView(LoginRequiredMixin, CreateView):
+    model = Location
+    fields = ['name', 'description', 'parentLocation', 'coords', 'osmObject']
+    success_url = reverse_lazy('myAlbums') # TODO MyLocations, list of all locations the user has access to
+    #pk = None
+
+    def form_valid(self, form):
+        #form.instance.created_by = self.request.user
+        # item = form.save()
+        # self.pk = item.pk
+        return super().form_valid(form)
+
+    #def get_success_url(self):
+    #     #print(self.pk)
+    #     return reverse_lazy('locationsview', kwargs={'pk': self.pk})
+
+class PersonCreateView(LoginRequiredMixin, CreateView):
+    model = Person

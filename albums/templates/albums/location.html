@@ -18,6 +18,7 @@ Check access: urlKey or owner or in the authorized list
         {% endif %}
         {% if location.coords %}
         <div class="location_coords"><label>GPS:</label> {{location.coords}}</div>
+        <!-- Add Leaflet.js block, zoomable, and get settings from app to choose available layers  -->
         {% endif %}
         {% if location.osmObject %}
         <div class="location_osmObject"><a href="{{location.osmObject}}">OpenStreetMap</a></div>
