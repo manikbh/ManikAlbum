@@ -2,7 +2,38 @@ li a {
     color: green;
 }
 
+h2 {
+    color: blue;
+    font-size: 2em;
+}
+
+.editing h2{
+    color: red;
+    font-size: 2em;
+    border: 1px solid #000;
+}
+title {
+    color: blue;
+    font-size: 2em;
+}
+
 .test-style-album {
     color: red;
     font-weight: bold;
+}
+
+.btn {
+    border-color: green;
+}
+.edit-btn a {
+    font-color: white;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    margin: 1px auto;
+    text-align: center;
+    padding: 3px;
+    border: 2px solid #000;
+    border-color: black;
+    background-color: darkred;
 }

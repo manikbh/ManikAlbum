@@ -1,0 +1,14 @@
+{% extends "albums/base.html" %}
+
+{% block title %}
+ManikAlbum - People
+{% endblock %}
+
+{% block content %}
+    <h2>People</h2>
+    <ul>
+        {% for person in object_list %}
+        <li><a href="{% url 'personview' person.id %}">{{ person.shortName }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

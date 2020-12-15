@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="{% get_current_language as LANGUAGE_CODE %}">
+{% load static %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'albums/style.css' %}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="{% static 'albums/images/favicon.ico' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'albums/style.css' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'albums/images/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'albums/images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'albums/images/favicon-16x16.png' %}">
+    <title>{% block title %}{% trans "ManikAlbum Server" %}{% endblock %}</title>
+</head>
+
+<body>
+    <div id="header">
+        {% block header %}
+        <ul>
+
+              {% if user.is_authenticated %}
+
+                <li>{% blocktrans %}Logged in as {% endblocktrans %}<strong>{{ user.username }}</strong>.
+                    <a href="{% url 'logout' %}">Log out</a>.
+                </li>
+
+              {% else %}
+                <a href="{% url 'login' %}" class="btn" role="button">Log in</a>
+                <a href="{% url 'signup' %}" class="btn" role="button">Sign up</a>
+              {% endif %}
+            <li><a href="{% url 'myalbums' %}" class="btn">My Albums</a></li>
+        </ul>
+        {% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

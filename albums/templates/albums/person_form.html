@@ -2,11 +2,11 @@
 {% load i18n %}
 
 {% block title %}
-ManikAlbum - Editing location
+ManikAlbum - Editing Person
 {% endblock %}
 
 {% block content %}
-<form action="" method="post">
+<form action="{%url 'personcreate' %}" method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit">

@@ -1,16 +1,14 @@
-<!DOCTYPE html>
+{% extends "albums/base.html" %}
 {% load i18n %}
-{% load static %}
-<html lang="{% get_current_language as LANGUAGE_CODE %}">
-<head>
-    <meta charset="UTF-8">
-    <title>{% trans "My albums" %}</title>
-    <link rel="icon" href="{% static 'albums/images/favicon.ico' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'albums/style.css' %}">
-</head>
-<body>
+
+{% block title %}
+ManikAlbum - My Albums
+{% endblock %}
+
+{% block content %}
+
 {% if user.is_authenticated %}
-    <p>{% trans "Bienvenue" %} {{ user.get_username }}. </p>
+    <p>{% translate "Bienvenue" %} {{ user.get_username }}. </p>
     {% if album_list %}
         <ul>
         {% for album in album_list %}
@@ -18,13 +16,12 @@
         {% endfor %}
         </ul>
     {% else %}
-        <p>{% trans "No Album available in your account." %}</p>
+        <p>{% translate "No Album available in your account." %}</p>
     {% endif %}
-
+    <div class="edit-btn"><a href="{% url 'albumcreate' %}">Create new album...</a></div>
 {% else %}
 <p>{% blocktrans %}"You are not logged in. Please <a href="/connect">connect</a> or create an account !" {% endblocktrans %} {{ user.get_username }}. </p>
 
 {% endif %}
-<div class="test-style-album">Testing style</div>
-</body>
-</html>
+
+{% endblock %}

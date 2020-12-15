@@ -1,0 +1,14 @@
+{% extends "albums/base.html" %}
+
+{% block title %}
+ManikAlbum - Locations
+{% endblock %}
+
+{% block content %}
+    <h2>Locations</h2>
+    <ul>
+        {% for location in object_list %}
+        <li><a href="{% url 'locationview' location.id %}">{{ location.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

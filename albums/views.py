@@ -113,7 +113,7 @@ def peopleView(request,person_id):
 
 
 # Locations (name, map, sublocation of)
-def locationEdit(request):
+def locationEdit(request, pk):
     pass
 
 
@@ -125,17 +125,39 @@ class AlbumListView(ListView):
     def get_queryset(self):
         return Album.objects.filter(owner=self.request.user).order_by('name')  # .filter(status__exact='o')
 
+
+class LocationListView(ListView):
+    template_name = "albums/mylocations.html"
+    model = Location
+    context_object_name = 'album_list'
+
+#    def get_queryset(self): # TODO filter only those that the user has access to
+#        return Album.objects.filter(owner=self.request.user).order_by('name')  # .filter(status__exact='o')
+
+
+class PersonListView(ListView):
+    template_name = "albums/mypersons.html"
+    model = Person
+    context_object_name = 'album_list'
+
+#    def get_queryset(self): # TODO filter only those that the user has access to
+#        return Album.objects.filter(owner=self.request.user).order_by('name')  # .filter(status__exact='o')
+
+
 class AlbumDetailView(DetailView):
     model = Album
     template_name = "albums/album.html"
+
 
 class PhotoDetailView(DetailView):
     model = Photo
     template_name = "albums/photo.html"
 
+
 class LocationDetailView(DetailView):
     model = Location
     template_name = "albums/location.html"
+
 
 class PersonDetailView(DetailView):
     model = Person
@@ -147,14 +169,21 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-class LocationCreateView(LoginRequiredMixin, CreateView):
+
+class LocationCreateUpdateView(LoginRequiredMixin, UpdateView):
     model = Location
     fields = ['name', 'description', 'parentLocation', 'coords', 'osmObject']
-    success_url = reverse_lazy('myAlbums') # TODO MyLocations, list of all locations the user has access to
+    success_url = reverse_lazy('mylocations') # TODO MyLocations, list of all locations the user has access to
     #pk = None
 
+    def get_object(self, queryset=None):
+        try:
+            return super().get_object(queryset)
+        except AttributeError:
+            return None
+
     def form_valid(self, form):
-        #form.instance.created_by = self.request.user
+        # form.instance.created_by = self.request.user
         # item = form.save()
         # self.pk = item.pk
         return super().form_valid(form)
@@ -163,5 +192,41 @@ class LocationCreateView(LoginRequiredMixin, CreateView):
     #     #print(self.pk)
     #     return reverse_lazy('locationsview', kwargs={'pk': self.pk})
 
-class PersonCreateView(LoginRequiredMixin, CreateView):
+
+class PersonCreateUpdateView(LoginRequiredMixin, UpdateView):
     model = Person
+    fields = ['shortName', 'fullName', 'birthDate', 'user']
+    success_url = reverse_lazy('mypersons')  # TODO MyLocations, list of all locations the user has access to
+    def get_object(self, queryset=None):
+        try:
+            return super().get_object(queryset)
+        except AttributeError:
+            return None
+
+
+class AlbumCreateUpdateView(LoginRequiredMixin, UpdateView):
+    model = Album
+    fields = ['name', 'description', 'location', 'startTime', 'endTime',
+              'public', 'photos', 'owner', 'admins', 'members', 'urlkey']
+    success_url = reverse_lazy('myalbums')
+    def get_object(self, queryset=None):
+        try:
+            return super().get_object(queryset)
+        except AttributeError:
+            return None
+
+
+class PhotoCreateUpdateView(LoginRequiredMixin, UpdateView):
+    model = Photo
+    #  Update also metadata in the same view, may need django extension
+    #  https://stackoverflow.com/questions/26200674/updateview-update-a-class-that-has-onetoone-with-user
+    fields = ['filename', 'thumbnail', 'metadata', 'owner', 'urlkey', 'public']
+    #success_url = reverse_lazy('myalbums')  # TODO Or ju
+    def get_object(self, queryset=None):
+        try:
+            return super().get_object(queryset)
+        except AttributeError:
+            return None
+
+    def get_success_url(self):
+        return reverse_lazy('photoview', kwargs={'pk': self.pk})

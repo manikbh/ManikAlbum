@@ -1,14 +1,15 @@
 {% extends "albums/base.html" %}
-{% load i18n %}
 
 {% block title %}
-ManikAlbum - Editing location
+ManikAlbum - Edit Album
 {% endblock %}
 
 {% block content %}
+    <div class="editing"><h2>Edit Album</h2></div>
 <form action="" method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit">
 </form>
+
 {% endblock %}

@@ -1,12 +1,11 @@
-<!DOCTYPE html>
+{% extends "albums/base.html" %}
 {% load i18n %}
-<html lang="{% get_current_language as LANGUAGE_CODE %}">
-<head>
-    <meta charset="UTF-8">
-    <title>{% trans "Photo-" %}{{photo.pk}}</title>
-</head>
-<body>
-Check access: urlKey or owner or in the authorized list
+
+{% block title %}
+ManikAlbum - Photo {{photo.metadata.name}}
+{% endblock %}
+
+{% block content %}
 {% if user.is_authenticated %}
     <div class="photo">
         <img class="photo_img" src="{{photo.filename.url}}" width="20%" alt="{{photo.metadata.name}}"/>
@@ -27,8 +26,10 @@ Check access: urlKey or owner or in the authorized list
         </div>
 
     </div>
+    <div class="edit-btn">
+        <a href="{% url 'photoedit' photo.pk %}">Edit...</a>
+    </div>
 {% else %}
     <p class="error">Not authenticated !</p>
 {% endif %}
-</body>
-</html>
+{% endblock %}

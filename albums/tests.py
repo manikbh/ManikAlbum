@@ -44,7 +44,7 @@ class AccessTest(TestCase):
     def test_authorizedAccessFromUnidentifiedUser(self):  # For public files and files with a urlKey access
         self.assertIs(False, True)
 
-    def test_unauthorizedAccessFromUnidentifiedUser(self):
+    def test_unauthorizedAccessFromUnidentifiedUser(self):  # Not public, no valid urlkey should not grant access
         self.assertIs(False, True)
 
 
@@ -69,6 +69,14 @@ class AuthorizeTest(TestCase):
 
     def test_addAlbumGroup(self):  # add read or read/write access to a group only if you are admin or owner
         self.assertIs(False, True)
+
+    def test_ownerNotEditable(self):  # No one should be able to update album or photo owner (read-only)
+        self.assertIs(False, True)  # Album test
+        self.assertIs(False, True)  # Photo test
+
+    def test_urlkeyNotEditable(self):  # No one should be able to manually change a urlkey (read-only)
+        self.assertIs(False, True)  # Album test
+        self.assertIs(False, True)  # Photo test
 
 
 class LockTest(TestCase):

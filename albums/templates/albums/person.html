@@ -1,12 +1,11 @@
-<!DOCTYPE html>
+{% extends "albums/base.html" %}
 {% load i18n %}
-<html lang="{% get_current_language as LANGUAGE_CODE %}">
-<head>
-    <meta charset="UTF-8">
-    <title>{% trans "Person-" %}{{person.pk}}</title>
-</head>
-<body>
-Check access: urlKey or owner or in the authorized list
+
+{% block title %}
+ManikAlbum - Person {{person.shortName}}
+{% endblock %}
+
+{% block content %}
 {% if user.is_authenticated %}
     <div class="person">
         <div class="person_shortname">{{person.shortName}}</div>
@@ -23,8 +22,10 @@ Check access: urlKey or owner or in the authorized list
         <div class="person_user"><label>User:</label> {{person.user}}</div>
         {% endif %}
     </div>
+    <div class="edit-btn">
+        <a href="{% url 'personedit' person.pk %}">Edit...</a>
+    </div>
 {% else %}
     <p class="error">Not authenticated !</p>
 {% endif %}
-</body>
-</html>
+{% endblock %}

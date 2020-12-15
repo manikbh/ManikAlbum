@@ -1,12 +1,11 @@
-<!DOCTYPE html>
+{% extends "albums/base.html" %}
 {% load i18n %}
-<html lang="{% get_current_language as LANGUAGE_CODE %}">
-<head>
-    <meta charset="UTF-8">
-    <title>{% trans "Location-" %}{{location.pk}}</title>
-</head>
-<body>
-Check access: urlKey or owner or in the authorized list
+
+{% block title %}
+ManikAlbum - Location {{location.name}}
+{% endblock %}
+
+{% block content %}
 {% if user.is_authenticated %}
     <div class="location">
         <div class="location_name"><label>Name:</label>{{location.name}}</div>
@@ -24,8 +23,10 @@ Check access: urlKey or owner or in the authorized list
         <div class="location_osmObject"><a href="{{location.osmObject}}">OpenStreetMap</a></div>
         {% endif %}
     </div>
+    <div class="edit-btn">
+        <a href="{% url 'locationedit' location.pk %}">Edit location...</a>
+    </div>
 {% else %}
     <p class="error">Not authenticated !</p>
 {% endif %}
-</body>
-</html>
+{% endblock %}

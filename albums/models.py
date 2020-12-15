@@ -23,6 +23,7 @@ from django.urls import reverse
 # import secrets
 import secrets
 
+
 class User(AbstractUser):
     description = models.TextField(max_length=1000,blank=True,null=True)
     personalUrl = models.URLField(blank=True, null=True)
@@ -32,7 +33,7 @@ class User(AbstractUser):
 
 
 class Person(models.Model):
-    user =  models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     shortName = models.CharField(max_length=20)
     fullName = models.CharField(null=True, max_length=20, blank=True)
     birthDate = models.DateField(null=True, blank=True)
@@ -71,6 +72,7 @@ class Metadata(models.Model):
     def __str__(self):
         return "Meta: " + self.name
 
+
 class PersonPresence(models.Model):
     person = models.ForeignKey(Person, on_delete=models.SET_NULL, blank=True, null=True) #blank -> there is someone unknown
     metadata = models.ForeignKey(Metadata, on_delete=models.CASCADE)
@@ -83,6 +85,7 @@ class PersonPresence(models.Model):
 
     def __str__(self):
         return self.person.shortName + " present in " + self.metadata.name
+
 
 class Location(models.Model):
     name = models.CharField( max_length=50,null=True)
@@ -97,6 +100,7 @@ class Location(models.Model):
     def __str__(self):
         return self.name
 
+
 class LocationPresence(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=False)
     metadata = models.ForeignKey(Metadata, on_delete=models.CASCADE, blank=False)
@@ -106,8 +110,10 @@ class LocationPresence(models.Model):
     def __str__(self):
         return self.location.name + " is location for " + self.metadata.name
 
+
 def generateRandomKey():
     return secrets.token_hex(10)
+
 
 class Photo(models.Model):
     # If generated, key used for sharing the photo as a URL
@@ -116,6 +122,7 @@ class Photo(models.Model):
     filename = models.ImageField()
     thumbnail = models.ImageField(blank=True,null=True)
     metadata = models.OneToOneField(Metadata, on_delete=models.CASCADE)
+    public = models.BooleanField(null=False, default=False) # anonymous user has read access ?
 
     def get_absolute_url(self):
         return reverse('photoview', args=[str(self.id)])
@@ -128,6 +135,7 @@ class Photo(models.Model):
         """Returns a random-prefixed file name from the uploaded file name"""
         return generateRandomKey() + '_' + name
 
+
 class PhotoIndex(models.Model):
     album = models.ForeignKey("Album",on_delete=models.CASCADE)
     photo = models.ForeignKey(Photo,on_delete=models.CASCADE)
@@ -135,6 +143,7 @@ class PhotoIndex(models.Model):
 
     class Meta:
         unique_together = (("album", "photo", "index"),)
+
 
 class Album(models.Model):
     """
