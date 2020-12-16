@@ -1,0 +1,32 @@
+{% extends "albums/base.html" %}
+{% load i18n %}
+
+{% block title %}
+ManikAlbum - My Photo
+{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+    {% if photo_list %}
+        <ul>
+        {% for photo in photo_list %}
+            <li><a href="{% url 'photoview' photo.id %}">{{ photo.metadata.name }}
+            {% if photo.thumbnail %}
+                <img class="thumbnail" src="{{photo.thumbnail.url}}" width="20%" alt="{{photo.metadata.name}}"/>
+            {% else %}
+                <img class="thumbnail" src="{{photo.filename.url}}" width="20%" alt="{{photo.metadata.name}}"/>
+            {% endif %}
+            </a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>{% translate "No photo available in your account." %}</p>
+    {% endif %}
+    <div class="edit-btn"><a href="{% url 'albumcreate' %}">Create new album...</a></div>
+{% else %}
+<p>{% blocktrans %}"You are not logged in. Please <a href="/connect">connect</a> or create an account !" {% endblocktrans %} {{ user.get_username }}. </p>
+
+{% endif %}
+
+{% endblock %}

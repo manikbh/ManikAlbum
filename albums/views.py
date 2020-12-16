@@ -15,7 +15,6 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from django.shortcuts import render, redirect
-from django.template import loader
 from django.http import HttpResponse
 from django.views.generic import ListView, CreateView, DetailView
 from django.contrib.auth import login
@@ -55,66 +54,39 @@ def account(request):
 def group(request):
     return HttpResponse("Manage group")
 
-
-# Managing your photos (uploads, select into albums or for metadata edit)
-def browse(request):
-    pass
-
-
-# View a photo
-def photo(request,photo_id):
-    try:
-        photoUrl = Photo.objects.get(pk=photo_id).filename.url
-        # TODO Use CSS Hover to make click zone visible
-        # https://stackoverflow.com/questions/8343531/is-it-possible-to-style-a-mouseover-on-an-image-map-using-css
-        return HttpResponse("Viewing Photo " + str(photo_id) + "<br/><img src=\"" + photoUrl
-                            + "\" style=\"width: 55vw; min-width: 330px;\" usemap=\"#facesmap\">"
-                            + "<map name=\"facesmap\">"
-                            + "<area shape=\"rect\" coords=\"0,0,10,150\" alt=\"Person shortname\" href=\"/peopleview/1/\"></map>")
-    except:
-        return HttpResponse("Viewing Photo " + str(photo_id) + "<br/><b>NOT FOUND</b>")
-
-@login_required
-def myAlbums(request):
-    album_list = Album.objects.filter(owner=request.user).order_by('name')
-    context = {
-        'album_list': album_list,
-    }
-    return render(request, 'albums/myalbums.html', context=context)  # View an Album
-
-
-def albumView(request, album_id, photo_index=-1):
-    if photo_index < 0:
-        #Full album view
-        return HttpResponse("Viewing album " + str(album_id) + " -> all photos")
-    else:
-        return HttpResponse("Viewing album " + str(album_id) + ", photo index="+str(photo_index))
-
-
-# Edit metadata of a photo (must have an account)
-def photoMetadata(request):
-    pass
-
-
-# Edit an album and its metadata (add/remove photos)
-@login_required
-def albumEdit(request, album_id):
-    pass
-
-
-# People FoF relationships, full name, short name, date of birth/death
-def peopleEdit(request):
-    pass
-
-# People in pictures
-def peopleView(request,person_id):
-    return HttpResponse("Looking at person "+str(person_id))
+# @login_required
+# def myAlbums(request):
+#     album_list = Album.objects.filter(owner=request.user).order_by('name')
+#     context = {
+#         'album_list': album_list,
+#     }
+#     return render(request, 'albums/myalbums.html', context=context)  # View an Album
+#
+#
+# def albumView(request, album_id, photo_index=-1):
+#     if photo_index < 0:
+#         #Full album view
+#         return HttpResponse("Viewing album " + str(album_id) + " -> all photos")
+#     else:
+#         return HttpResponse("Viewing album " + str(album_id) + ", photo index="+str(photo_index))
+#
 
 
 
-# Locations (name, map, sublocation of)
-def locationEdit(request, pk):
-    pass
+class PhotoListView(ListView):
+    template_name = "albums/myphotos.html"
+    model = Album
+    context_object_name = 'photo_list'
+
+    def get_queryset(self):
+        startAt = 0
+        maxElements = 20
+        if 'startAt' in self.kwargs:
+            startAt = self.kwargs['startAt']
+        if 'maxElements' in self.kwargs:
+            maxElements = self.kwargs['maxElements']
+
+        return Photo.objects.filter(owner=self.request.user).order_by('id')[startAt:startAt+maxElements]  # .filter(status__exact='o')
 
 
 class AlbumListView(ListView):
@@ -130,7 +102,7 @@ class LocationListView(ListView):
     template_name = "albums/mylocations.html"
     model = Location
     context_object_name = 'album_list'
-
+    paginate_by = 2
 #    def get_queryset(self): # TODO filter only those that the user has access to
 #        return Album.objects.filter(owner=self.request.user).order_by('name')  # .filter(status__exact='o')
 
@@ -193,6 +165,7 @@ class LocationCreateUpdateView(LoginRequiredMixin, UpdateView):
     #     return reverse_lazy('locationsview', kwargs={'pk': self.pk})
 
 
+# People FoF relationships, full name, short name, date of birth/death
 class PersonCreateUpdateView(LoginRequiredMixin, UpdateView):
     model = Person
     fields = ['shortName', 'fullName', 'birthDate', 'user']
