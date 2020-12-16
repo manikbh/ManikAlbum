@@ -76,19 +76,19 @@ class Metadata(models.Model):
 class PersonPresence(models.Model):
     person = models.ForeignKey(Person, on_delete=models.SET_NULL, blank=True, null=True) #blank -> there is someone unknown
     metadata = models.ForeignKey(Metadata, on_delete=models.CASCADE)
-    x = models.FloatField(blank = False, default=0.0)
-    y = models.FloatField(blank = False, default=0.0)
-    w = models.FloatField(blank = False, default=1.0)
-    h = models.FloatField(blank = False, default=1.0)
-    tStart = models.TimeField(blank = True, null=True)
-    tEnds = models.TimeField(blank = True, null=True)
+    x = models.FloatField(blank=False, default=0.0)
+    y = models.FloatField(blank=False, default=0.0)
+    w = models.FloatField(blank=False, default=1.0)
+    h = models.FloatField(blank=False, default=1.0)
+    tStart = models.TimeField(blank=True, null=True)
+    tEnds = models.TimeField(blank=True, null=True)
 
     def __str__(self):
         return self.person.shortName + " present in " + self.metadata.name
 
 
 class Location(models.Model):
-    name = models.CharField( max_length=50,null=True)
+    name = models.CharField(max_length=50,null=True)
     description = models.TextField(blank=True, max_length=10000, null=True)
     parentLocation = models.ForeignKey('Location', on_delete=models.SET_NULL, blank=True, null=True)
     coords = models.CharField(blank=True, max_length=100, null=True)  # GPS coords TODO GeoDjango ?

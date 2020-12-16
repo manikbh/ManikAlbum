@@ -230,3 +230,23 @@ class PhotoCreateUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('photoview', kwargs={'pk': self.pk})
+
+
+class PhotoDeleteView(DeleteView):
+    model = Photo
+    success_url = reverse_lazy('myalbums')
+
+
+class AlbumDeleteView(DeleteView):
+    model = Album
+    success_url = reverse_lazy('myalbums')
+
+
+class LocationDeleteView(DeleteView):
+    model = Location
+    success_url = reverse_lazy('mylocations')
+
+
+class PersonDeleteView(DeleteView):
+    model = Person
+    success_url = reverse_lazy('mypersons')

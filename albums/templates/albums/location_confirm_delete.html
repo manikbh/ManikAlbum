@@ -1,0 +1,15 @@
+{% extends "albums/base.html" %}
+
+{% block title %}
+ManikAlbum - Delete Location
+{% endblock %}
+
+{% block content %}
+    <div class="editing"><h2>Delete Location</h2>
+<form method="post">{% csrf_token %}
+    <p>Are you sure you want to delete location "{{ object.name }}"?</p>
+    <input type="submit" value="Delete">
+    <a href="{{ view.get_success_url }}" class="btn-cancel">Cancel</a>
+</form>
+    </div>
+{% endblock %}

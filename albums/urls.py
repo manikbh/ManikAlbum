@@ -28,6 +28,7 @@ urlpatterns = [
     #  path('photo/<int:photo_id>', views.photo, name='photo'),
     path('photo/<int:pk>', views.PhotoDetailView.as_view(), name='photoview'),
     path('photoedit/<int:pk>/', views.PhotoCreateUpdateView.as_view(), name='photoedit'),
+    path('photodelete/<int:pk>/', views.PhotoDeleteView.as_view(), name='photodelete'),
     path('browse', views.browse, name='browse'),
     #  path('myalbums/', views.myAlbums, name='myAlbums'),
     path('myalbums/', views.AlbumListView.as_view(), name='myalbums'),
@@ -38,13 +39,15 @@ urlpatterns = [
     path('albumview/<int:album_id>/<int:photo_index>/', views.albumView, name='albumviewphoto'),
     path('albumedit/<int:pk>/', views.AlbumCreateUpdateView.as_view(), name='albumedit'),
     path('albumcreate/', views.AlbumCreateUpdateView.as_view(), name='albumcreate'),
+    path('albumdelete/<int:pk>/', views.AlbumDeleteView.as_view(), name='albumdelete'),
     path('personview/<int:pk>/', views.PersonDetailView.as_view(), name='personview'),
     path('personedit/<int:pk>/', views.PersonCreateUpdateView.as_view(), name='personedit'),
     path('personcreate/', views.PersonCreateUpdateView.as_view(), name='personcreate'),
-    #  path('personcreate/', views.PersonCreateUpdateView.as_view(), name='personcreate'),
+    path('persondelete/<int:pk>/', views.PersonDeleteView.as_view(), name='persondelete'),
     path('locationview/<int:pk>/', views.LocationDetailView.as_view(), name='locationview'),
     path('locationedit/<int:pk>/', views.LocationCreateUpdateView.as_view(), name='locationedit'),
     path('locationcreate/', views.LocationCreateUpdateView.as_view(), name='locationcreate'),
+    path('locationdelete/<int:pk>/', views.LocationDeleteView.as_view(), name='locationdelete'),
 ]
 
 # from django.conf import settings
