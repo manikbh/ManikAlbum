@@ -5,11 +5,15 @@ ManikAlbum - Edit Photo
 {% endblock %}
 
 {% block content %}
-    <div class="editing"><h2>Edit Photo</h2></div>
-    <form action="" method="post">
-      {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Submit">
-    </form>
+    <div class="editing">
+        <h2>Edit Photo</h2>
+        <form action="" method="post">
+        {% csrf_token %}
+            <table>
+            {{ form.as_table}}
+            </table>
+        <input type="submit" value="Save">
+        </form>
+    </div>
 
 {% endblock %}

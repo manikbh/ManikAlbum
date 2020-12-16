@@ -6,9 +6,14 @@ ManikAlbum - Editing location
 {% endblock %}
 
 {% block content %}
+<div class="editing">
+<h2>Edit Location</h2>
 <form action="" method="post">
     {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
+    <table>
+    {{ form.as_table }}
+    </table>
+    <input type="submit" value="Save">
 </form>
+</div>
 {% endblock %}
