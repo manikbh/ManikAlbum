@@ -22,6 +22,7 @@ from django.urls import reverse
 
 # import secrets
 import secrets
+from datetime import datetime
 
 
 class User(AbstractUser):
@@ -115,11 +116,16 @@ def generateRandomKey():
     return secrets.token_hex(10)
 
 
+def generateFilePath(instance, filename):
+    """Returns a random-prefixed file name from the uploaded file name"""
+    _now = datetime.now()
+    return 'photos/u-{0}/{1}/{2}/{3}/{4}'.format(instance.owner.id, _now.year, _now.month, _now.day, filename)
+
 class Photo(models.Model):
     # If generated, key used for sharing the photo as a URL
     urlkey = models.CharField(null=True, max_length=30,default=generateRandomKey)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    filename = models.ImageField()
+    filename = models.ImageField(upload_to=generateFilePath)
     thumbnail = models.ImageField(blank=True,null=True)
     metadata = models.OneToOneField(Metadata, on_delete=models.CASCADE)
     public = models.BooleanField(null=False, default=False) # anonymous user has read access ?
@@ -130,10 +136,9 @@ class Photo(models.Model):
     def __str__(self):
         return self.filename.name
 
-    @staticmethod
-    def generateFileName(name="DSC.jpg"):
-        """Returns a random-prefixed file name from the uploaded file name"""
-        return generateRandomKey() + '_' + name
+
+
+
 
 
 class PhotoIndex(models.Model):
