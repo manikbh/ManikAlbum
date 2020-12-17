@@ -142,18 +142,21 @@ class Photo(models.Model):
 @receiver(models.signals.post_delete, sender=Photo)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
-    Deletes file from filesystem
+    Deletes file and thumbnail from filesystem
     when corresponding `Photo` object is deleted.
     """
-    if instance.file:
-        if os.path.isfile(instance.file.path):
-            os.remove(instance.file.path)
+    if instance.filename:
+        if os.path.isfile(instance.filename.path):
+            os.remove(instance.filename.path)
+    if instance.thumbnail:
+        if os.path.isfile(instance.thumbnail.path):
+            os.remove(instance.thumbnail.path)
 
 @receiver(models.signals.pre_save, sender=Photo)
 def auto_delete_file_on_change(sender, instance, **kwargs):
     """
-    Deletes old file from filesystem
-    when corresponding `MediaFile` object is updated
+    Deletes old file and thumbnail from filesystem
+    when corresponding `Photo` object is updated
     with new file.
     """
     if not instance.pk:
@@ -161,6 +164,7 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 
     try:
         old_file = Photo.objects.get(pk=instance.pk).filename
+        old_thumb = Photo.objects.get(pk=instance.pk).thumbnail
     except Photo.DoesNotExist:
         return False
 
@@ -168,6 +172,9 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     if not old_file == new_file:
         if os.path.isfile(old_file.path):
             os.remove(old_file.path)
+        if old_thumb:
+            if os.path.isfile(old_thumb.path):
+                os.remove(old_thumb.path)
 
 
 
