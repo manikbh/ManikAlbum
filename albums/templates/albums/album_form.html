@@ -14,4 +14,7 @@ ManikAlbum - Edit Album
         <input type="submit" value="Save">
     </form>
     </div>
+<div class="uploader">
+    {% include "albums/photouploader.html" with album=form.instance only %}
+</div>
 {% endblock %}
