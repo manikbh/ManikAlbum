@@ -19,9 +19,11 @@ from django.utils.translation import gettext as _
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
+from django.dispatch import receiver
 
 # import secrets
 import secrets
+import os
 from datetime import datetime
 
 
@@ -137,7 +139,35 @@ class Photo(models.Model):
         return self.filename.name
 
 
+@receiver(models.signals.post_delete, sender=Photo)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `Photo` object is deleted.
+    """
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
 
+@receiver(models.signals.pre_save, sender=Photo)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    """
+    Deletes old file from filesystem
+    when corresponding `MediaFile` object is updated
+    with new file.
+    """
+    if not instance.pk:
+        return False
+
+    try:
+        old_file = Photo.objects.get(pk=instance.pk).filename
+    except Photo.DoesNotExist:
+        return False
+
+    new_file = instance.filename
+    if not old_file == new_file:
+        if os.path.isfile(old_file.path):
+            os.remove(old_file.path)
 
 
 
