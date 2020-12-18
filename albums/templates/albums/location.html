@@ -1,4 +1,4 @@
-{% extends "albums/base.html" %}
+{% extends "albums/mapdisplay.html" %}
 {% load i18n %}
 
 {% block title %}
@@ -15,6 +15,7 @@ ManikAlbum - Location {{location.name}}
         {% if location.parentLocation %}
         <div class="location_parentlocation"><label>Parent location</label> <a href="{%url 'locationview' location.parentLocation.pk %}">{{location.parentLocation.name}}</a></div>
         {% endif %}
+        <div style="height:300px;" id="mapid"></div>
         {% if location.coords %}
         <div class="location_coords"><label>GPS:</label> {{location.coords}}</div>
         <!-- Add Leaflet.js block, zoomable, and get settings from app to choose available layers  -->
@@ -29,4 +30,10 @@ ManikAlbum - Location {{location.name}}
 {% else %}
     <p class="error">Not authenticated !</p>
 {% endif %}
+{% endblock %}
+
+{% block js %}
+{% with coords=location.coords name=location.name %}
+        {{ block.super }}
+{% endwith %}
 {% endblock %}
