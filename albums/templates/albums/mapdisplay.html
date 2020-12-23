@@ -13,7 +13,7 @@
    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
    crossorigin=""></script>
 <script>
-
+/* This uses variables such as coords, name and onMapClick provided by the caller */
 {% if coords %}
 
 var coordsN = "{{coords}}".split(',').map(Number);
@@ -30,6 +30,22 @@ var marker = L.marker(coordsN).addTo(mymap);
 {% if name %}
 marker.bindPopup("<b>{{name}}</b>").openPopup();
 {% endif %}
+
+
+var newLocation;
+function showMarker(e) {
+    if(typeof newLocation === "undefined"){
+         newLocation = L.marker(e.latlng).addTo(mymap);
+    }else{
+        newLocation.setLatLng(e.latlng)
+    }
+}
+
+if (typeof onMapClick === "function") {
+    mymap.on('click', onMapClick);
+    mymap.on('click', showMarker);
+}
+
 
 {% endif %}
 </script>

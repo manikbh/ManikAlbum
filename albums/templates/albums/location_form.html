@@ -23,6 +23,12 @@ ManikAlbum - Editing location
 {% endblock %}
 
 {% block js %}
+<script>
+function onMapClick(e) {
+    document.getElementById('id_coords').value = e.latlng.lat.toString() + "," + e.latlng.lat.toString();
+
+}
+</script>
 {% with coords=form.instance.coords name=form.instance.name %}
         {{ block.super }}
 {% endwith %}
