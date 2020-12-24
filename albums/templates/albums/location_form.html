@@ -26,6 +26,7 @@ ManikAlbum - Editing location
 <script>
 function onMapClick(e) {
     document.getElementById('id_coords').value = e.latlng.lat.toString() + "," + e.latlng.lat.toString();
+    document.getElementById('id_coords').style.background = 'red';
 
 }
 </script>
