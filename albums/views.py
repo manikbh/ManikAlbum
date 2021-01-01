@@ -245,40 +245,41 @@ def uploadPhoto(request):
     if request.method == 'POST':
         form = PhotoUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            metadata = Metadata(name=request.FILES['file'].name)
-            metadata.save()
-            newPhoto = Photo(owner=request.user, filename=request.FILES['file'], metadata=metadata)
-            # Save the photo file in the path from chunks
-            newPhoto.save()
-            newPhotoPath = newPhoto.filename.path
-            # Create a thumbnail
-            size = 250, 250
-            filename, ext = os.path.splitext(newPhotoPath)
-            im = Image.open(newPhotoPath)
-            im.thumbnail(size)
-            if im._getexif() is not None and 36867 in im._getexif():  # DateTimeOriginal
-                exifdate = datetime.strptime(im._getexif()[36867], '%Y:%m:%d %H:%M:%S')
-            else:
-                exifdate = None
-            thumbfile = filename + "_thumb.jpg"
-            im.save(thumbfile, "JPEG", quality=70)
-            newPhoto.thumbnail.name = remove_prefix('.'.join(urlparse(newPhoto.filename.url).path.split('.')[:-1]) + "_thumb.jpg", "/media/")
-            newPhoto.save()  # Save thumbnail
+            for upFile in request.FILES.getlist('file'):
+                metadata = Metadata(name=upFile.name)
+                metadata.save()
+                newPhoto = Photo(owner=request.user, filename=upFile, metadata=metadata)
+                # Save the photo file in the path from chunks
+                newPhoto.save()
+                newPhotoPath = newPhoto.filename.path
+                # Create a thumbnail
+                size = 250, 250
+                filename, ext = os.path.splitext(newPhotoPath)
+                im = Image.open(newPhotoPath)
+                im.thumbnail(size)
+                if im._getexif() is not None and 36867 in im._getexif():  # DateTimeOriginal
+                    exifdate = datetime.strptime(im._getexif()[36867], '%Y:%m:%d %H:%M:%S')
+                else:
+                    exifdate = None
+                thumbfile = filename + "_thumb.jpg"
+                im.save(thumbfile, "JPEG", quality=70)
+                newPhoto.thumbnail.name = remove_prefix('.'.join(urlparse(newPhoto.filename.url).path.split('.')[:-1]) + "_thumb.jpg", "/media/")
+                newPhoto.save()  # Save thumbnail
 
-            # Update Metadata and populate it (name, exif date and GPS coords, description)
-            metadata.timestamp=exifdate
-            metadata.save()
+                # Update Metadata and populate it (name, exif date and GPS coords, description)
+                metadata.timestamp=exifdate
+                metadata.save()
 
 
-            # If there is an album pk, add the photo to it:
-            if request.POST['albumpk']:
-                if Album.objects.filter(pk=request.POST['albumpk']).exists():
-                    newPhoto.pk
+                # If there is an album pk, add the photo to it:
+                if request.POST['albumpk']:
+                    if Album.objects.filter(pk=request.POST['albumpk']).exists():
+                        newPhoto.pk
 
 
 
             # Redirect to the document list after POST
-            return JsonResponse({'error': False, 'message': 'Uploaded Successfully'})
+            return JsonResponse({'error': False, 'message': "<br/>".join([upFile.name + ' uploaded !' for upFile in request.FILES.getlist('file')])})
             #return HttpResponseRedirect(reverse('myalbums'))
         else:
             return JsonResponse({'error': True, 'errors': form.errors})

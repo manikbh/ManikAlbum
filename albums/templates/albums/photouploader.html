@@ -1,15 +1,9 @@
 <form action="{% url 'uploadphoto' %}" method="post" enctype="multipart/form-data" id="id_ajax_upload_form" novalidate="">
     {% csrf_token %}
-    <p>{{ form.non_field_errors }}</p>
-    <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
-    <p>
-        {{ form.docfile.errors }}
-        {{ form.docfile }}
-    </p>
     {{ form.as_p }}
     <p><input type="submit" value="Upload" /></p>
 </form>
-
+<div id="uploadResult"></div>
 <script
 src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
@@ -32,8 +26,9 @@ $('#id_ajax_upload_form').submit(function(e){
                 })
             }
             else{
-                alert(response.message)
-                window.location = ""
+                /*alert(response.message)*/
+                $('#uploadResult').append("<p>"+response.message+"</p>")
+                /*window.location = ""*/
             }
         },
         cache: false,
