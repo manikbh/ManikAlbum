@@ -11,6 +11,33 @@ h2 {
     border-style: double;
 }
 
+#selectable{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.centered{
+    margin:auto;
+}
+.checked {border:solid 2px red;background:#ffff00;}
+
+img.thumbnail {
+    border:solid 2px black;background:#eeeeee;
+    vertical-align: middle;
+    max-height:160px;
+    min-height:160px
+    max-width:20%;
+    height:auto;
+    width:auto;
+    margin-bottom:0.5em;
+    margin-bottom:0.5em;
+    margin-right:0.1em;
+}
+
+img.thumbnail:hover{
+    opacity:0.5;
+}
+
 .editing{
     border-style: double;
     padding-bottom: 0.5em;
@@ -21,7 +48,7 @@ h2 {
     font-size: 2em;
     margin-top: 0.2em;
     text-align: center;
-    border-bottom: 3px solid black ;*/
+    border-bottom: 3px solid black ;
 }
 .editing td{
     border: 1px solid #ddd;
@@ -39,7 +66,7 @@ h2 {
     color: red;
     font-size: 1em;
     font-weight: bold;
-    margin:0.3em
+    margin:0.3em;
     /*border: 1px solid #000;
     border-color: red*/
 }
@@ -83,7 +110,7 @@ title {
     color: white;
     text-decoration: none;
     display: inline-block;
-    margin: 1px auto;
+    margin: 3px auto;
     text-align: center;
     padding: 3px;
     border: 2px solid #000;

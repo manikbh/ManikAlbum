@@ -7,26 +7,67 @@ ManikAlbum - My Photo
 
 {% block content %}
 
+
+
 {% if user.is_authenticated %}
+<div class="edit-btn centered"><a href="{% url 'photoupload' %}">Upload new photos...</a></div>
     {% if photo_list %}
-        <ul>
+        <div id="selectable" class=thumbnails">
         {% for photo in photo_list %}
-            <li><a href="{% url 'photoview' photo.id %}">{{ photo.metadata.name }}
+            <a class="thumblink" href="{% url 'photoview' photo.id %}">
             {% if photo.thumbnail %}
-                <img class="thumbnail" src="{{photo.thumbnail.url}}" width="20%" alt="{{photo.metadata.name}}"/>
+                <img class="thumbnail" src="{{photo.thumbnail.url}}" alt="{{photo.metadata.name}}"/>
             {% else %}
-                <img class="thumbnail" src="{{photo.filename.url}}" width="20%" alt="{{photo.metadata.name}}"/>
+                <img class="thumbnail" src="{{photo.filename.url}}" alt="{{photo.metadata.name}}"/>
             {% endif %}
-            </a></li>
+            </a>
         {% endfor %}
-        </ul>
+        </div>
+        <div id=display>*</div>
     {% else %}
         <p>{% translate "No photo available in your account." %}</p>
     {% endif %}
-    <div class="edit-btn"><a href="{% url 'albumcreate' %}">Create new album...</a></div>
 {% else %}
 <p>{% blocktrans %}"You are not logged in. Please <a href="/connect">connect</a> or create an account !" {% endblocktrans %} {{ user.get_username }}. </p>
 
 {% endif %}
 
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+////////////////////////
+var image_selected = new Array();
+
+//////////////
+ $('#selectable').on('click', ".thumbnail", function () {
+
+        var aa = $(this)
+        if( !aa.is('.checked')){
+            aa.addClass('checked');
+
+var my_id=this.id;
+image_selected.push(my_id);
+
+        } else {
+            aa.removeClass('checked');
+            var my_id=this.id;
+			var index = image_selected.indexOf(my_id);
+			if (index > -1) {
+			image_selected.splice(index, 1);
+			}
+        }
+	$('#display').html("ID of selected images :"+image_selected);
+    })
+
+///////////////////
+
+    $(".thumbnail").click(function() {
+        return false;
+    }).dblclick(function() {
+        window.location = this.href;
+        return false;
+    });
+})</script>
 {% endblock %}
