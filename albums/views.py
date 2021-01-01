@@ -15,13 +15,23 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.generic import ListView, CreateView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 
-from .models import Album, User, Photo, Location, Person
-from .forms import SignUpForm
+from django.template import RequestContext
+from django.urls import reverse
+
+from PIL import Image, ExifTags
+from datetime import datetime
+import os
+
+from urllib.parse import urlparse
+
+from .models import Album, User, Photo, Location, Person, Metadata
+from .forms.SignUpForm import SignUpForm
+from .forms.photouploadform import PhotoUploadForm
 
 
 def index(request):
@@ -223,3 +233,60 @@ class LocationDeleteView(DeleteView):
 class PersonDeleteView(DeleteView):
     model = Person
     success_url = reverse_lazy('mypersons')
+
+
+def uploadPhoto(request):
+    def remove_prefix(text, prefix):
+        if text.startswith(prefix):
+            return text[len(prefix):]
+        return text  # or whatever
+
+    # Handle file upload
+    if request.method == 'POST':
+        form = PhotoUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            metadata = Metadata(name=request.FILES['file'].name)
+            metadata.save()
+            newPhoto = Photo(owner=request.user, filename=request.FILES['file'], metadata=metadata)
+            # Save the photo file in the path from chunks
+            newPhoto.save()
+            newPhotoPath = newPhoto.filename.path
+            # Create a thumbnail
+            size = 250, 250
+            filename, ext = os.path.splitext(newPhotoPath)
+            im = Image.open(newPhotoPath)
+            im.thumbnail(size)
+            if im._getexif() is not None and 36867 in im._getexif():  # DateTimeOriginal
+                exifdate = datetime.strptime(im._getexif()[36867], '%Y:%m:%d %H:%M:%S')
+            else:
+                exifdate = None
+            thumbfile = filename + "_thumb.jpg"
+            im.save(thumbfile, "JPEG", quality=70)
+            newPhoto.thumbnail.name = remove_prefix('.'.join(urlparse(newPhoto.filename.url).path.split('.')[:-1]) + "_thumb.jpg", "/media/")
+            newPhoto.save()  # Save thumbnail
+
+            # Update Metadata and populate it (name, exif date and GPS coords, description)
+            metadata.timestamp=exifdate
+            metadata.save()
+
+
+            # If there is an album pk, add the photo to it:
+            if request.POST['albumpk']:
+                if Album.objects.filter(pk=request.POST['albumpk']).exists():
+                    newPhoto.pk
+
+
+
+            # Redirect to the document list after POST
+            return JsonResponse({'error': False, 'message': 'Uploaded Successfully'})
+            #return HttpResponseRedirect(reverse('myalbums'))
+        else:
+            return JsonResponse({'error': True, 'errors': form.errors})
+    else:
+        form = PhotoUploadForm() # A empty, unbound form
+
+    # GET
+    return render(request,
+                  'albums/photouploader.html',
+                  {'form': PhotoUploadForm(), }
+                  )

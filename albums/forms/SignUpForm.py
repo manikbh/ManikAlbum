@@ -20,7 +20,7 @@ from django.db import transaction
 
 from albums.models import User
 
-class StudentSignUpForm(UserCreationForm):
+class SignUpForm(UserCreationForm):
     # interests = forms.ModelMultipleChoiceField(
     #     queryset=Subject.objects.all(),
     #     widget=forms.CheckboxSelectMultiple,
