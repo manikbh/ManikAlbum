@@ -181,7 +181,7 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 class PhotoIndex(models.Model):
     album = models.ForeignKey("Album",on_delete=models.CASCADE)
     photo = models.ForeignKey(Photo,on_delete=models.CASCADE)
-    index = models.IntegerField()
+    index = models.IntegerField(default=-1)
 
     class Meta:
         unique_together = (("album", "photo", "index"),)

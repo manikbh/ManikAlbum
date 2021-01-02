@@ -235,7 +235,7 @@ class PersonDeleteView(DeleteView):
     success_url = reverse_lazy('mypersons')
 
 
-def uploadPhoto(request):
+def uploadPhoto(request,albumpk=-1):
     def remove_prefix(text, prefix):
         if text.startswith(prefix):
             return text[len(prefix):]
@@ -272,10 +272,12 @@ def uploadPhoto(request):
 
 
                 # If there is an album pk, add the photo to it:
-                if request.POST['albumpk']:
-                    if Album.objects.filter(pk=request.POST['albumpk']).exists():
-                        newPhoto.pk
-
+                if form.cleaned_data['albumpk'] >= 0:
+                    print("There is an albumpk -> "+repr(form.cleaned_data['albumpk']))
+                    if Album.objects.filter(pk=form.cleaned_data['albumpk']).exists():
+                        Album.objects.get(pk=albumpk).photos.add(newPhoto)
+                else:
+                    print("There is NO albumpk -> "+repr(form.cleaned_data['albumpk']))
 
 
             # Redirect to the document list after POST
@@ -284,10 +286,11 @@ def uploadPhoto(request):
         else:
             return JsonResponse({'error': True, 'errors': form.errors})
     else:
-        form = PhotoUploadForm() # A empty, unbound form
+        print("Creating photo upload form with albumpk="+repr(albumpk))
+        form = PhotoUploadForm(initial={'albumpk': albumpk})  # A empty, unbound form
 
     # GET
     return render(request,
                   'albums/photouploader.html',
-                  {'form': PhotoUploadForm(), }
+                  {'form': form, 'albumpk': albumpk}
                   )

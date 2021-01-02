@@ -33,6 +33,7 @@ urlpatterns = [
     path('myphotos/<int:startAt>/', views.PhotoListView.as_view(), name='myphotos'),
     path('myphotos/', views.PhotoListView.as_view(), name='myphotos'),
     path('photoupload/', views.uploadPhoto, name='photoupload'),
+    path('photoupload/<int:albumpk>/', views.uploadPhoto, name='photoupload'),
     path('myalbums/', views.AlbumListView.as_view(), name='myalbums'),
     path('mylocations/', views.LocationListView.as_view(), name='mylocations'),
     path('mypersons/', views.PersonListView.as_view(), name='mypersons'),

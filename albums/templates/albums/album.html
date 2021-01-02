@@ -24,6 +24,9 @@ ManikAlbum - Album {{album.name}}
     <div class="edit-btn">
         <a href="{% url 'albumedit' album.pk %}">Edit...</a>
     </div>
+    <div class="edit-btn">
+        <a href="{% url 'photoupload' album.pk %}">Upload Photos...</a>
+    </div>
 {% else %}
     <p class="error">Not authenticated !</p>
 {% endif %}

@@ -7,5 +7,4 @@ class PhotoUploadForm(forms.Form):
         help_text='Choose file to upload',
         widget=forms.ClearableFileInput(attrs={'multiple': True})
     )
-
-    albumpk = forms.IntegerField(widget=forms.HiddenInput(), initial=-1)
+    albumpk = forms.IntegerField(widget=forms.HiddenInput())
