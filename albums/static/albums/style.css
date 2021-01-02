@@ -19,7 +19,7 @@ h2 {
 .centered{
     margin:auto;
 }
-.checked {border:solid 2px red;background:#ffff00;}
+
 
 img.thumbnail {
     border:solid 2px black;background:#eeeeee;
@@ -32,11 +32,14 @@ img.thumbnail {
     margin-bottom:0.5em;
     margin-bottom:0.5em;
     margin-right:0.1em;
+    padding:1px;
 }
 
 img.thumbnail:hover{
     opacity:0.5;
 }
+
+img.thumbnail.checked {border:solid 2px red;background:#ffff00;}
 
 .editing{
     border-style: double;
@@ -116,4 +119,17 @@ title {
     border: 2px solid #000;
     border-color: black;
     background-color: darkred;
+}
+
+.btn {
+    font-color: black;
+    color: black;
+    text-decoration: none;
+    display: inline-block;
+    margin: 3px auto;
+    text-align: center;
+    padding: 3px;
+    border: 2px solid #000;
+    border-color: black;
+    background-color: white;
 }

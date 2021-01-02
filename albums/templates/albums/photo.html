@@ -8,7 +8,7 @@ ManikAlbum - Photo {{photo.metadata.name}}
 {% block content %}
 {% if user.is_authenticated %}
     <div class="photo">
-        <img class="photo_img" src="{{photo.filename.url}}" width="20%" alt="{{photo.metadata.name}}"/>
+        <img class="photo_img" src="{{photo.filename.url}}" width="100%" alt="{{photo.metadata.name}}"/>
         <div class="photo_name"><label>Title:</label>{{photo.metadata.name}}</div>
         <div class="photo_desc"><label>Description:</label>{{photo.metadata.description}}</div>
         <div class="photo_timestamp"><label>Date:</label>{{photo.metadata.timestamp.date}}</div>

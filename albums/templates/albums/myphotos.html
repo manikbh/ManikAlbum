@@ -11,16 +11,28 @@ ManikAlbum - My Photo
 
 {% if user.is_authenticated %}
 <div class="edit-btn centered"><a href="{% url 'photoupload' %}">Upload new photos...</a></div>
+<div class="btn" id="selectall">Select all</div> <div class="btn" id="selectnone">Deselect all</div>
+<div class="btn" id="createalbum">Create album from selection</div>
+<div class="btn" id="setdatelocation">Apply date and location</div>
+<input type="date" id="dateinput"><input type="time" id="timeinput">
+<select name="dateprecision" id="datetimeprecisioninput">
+    <option value="">--Date/Time precision--</option>
+    <option value="year">Year</option>
+    <option value="month">Month</option>
+    <option value="day">Day</option>
+    <option value="second">Second</option>
+</select>
+<input type="search" name="location" value="Location" id="locationinput">
     {% if photo_list %}
         <div id="selectable" class=thumbnails">
         {% for photo in photo_list %}
-            <a class="thumblink" href="{% url 'photoview' photo.id %}">
+            <div class="thumblink">
             {% if photo.thumbnail %}
-                <img class="thumbnail" src="{{photo.thumbnail.url}}" alt="{{photo.metadata.name}}"/>
+                <img href="{% url 'photoview' photo.id %}" id="photo-{{photo.id}}" class="thumbnail" src="{{photo.thumbnail.url}}" alt="{{photo.metadata.name}}"/>
             {% else %}
-                <img class="thumbnail" src="{{photo.filename.url}}" alt="{{photo.metadata.name}}"/>
+                <img href="{% url 'photoview' photo.id %}" id="photo-{{photo.id}}" class="thumbnail" src="{{photo.filename.url}}" alt="{{photo.metadata.name}}"/>
             {% endif %}
-            </a>
+            </div>
         {% endfor %}
         </div>
         <div id=display>*</div>
@@ -35,39 +47,88 @@ ManikAlbum - My Photo
 {% endblock %}
 
 {% block js %}
-<script>
-$(document).ready(function() {
-////////////////////////
+<script
+src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+
 var image_selected = new Array();
 
-//////////////
- $('#selectable').on('click', ".thumbnail", function () {
-
-        var aa = $(this)
+$(".thumbnail").click(function(e) {
+        var aa = $(this);
+        if (e.shiftKey) console.log("Shift, yay!");
         if( !aa.is('.checked')){
+            console.log("Clicked is NOT checked");
             aa.addClass('checked');
+            var my_id=this.id;
+            image_selected.push(my_id);
+            var myidx = 9999999999;
+            var lastchecked = -1;
+            if(e.shiftKey){
+                $('.thumbnail').each(function(i, obj) {
+                    console.log("Checking " + obj.id + " against this->"+my_id);
+                    if (my_id==obj.id){
+                        myidx = i;
+                        console.log("Found this at index "+myidx);
+                    }
 
-var my_id=this.id;
-image_selected.push(my_id);
+                    if (i < myidx && obj.classList.contains('checked')){
+                        lastchecked = i;
+                        console.log(obj.id + " is last checked")
+                    }
+                });
+                $('.thumbnail').each(function(i, obj) {
+                    if(i>lastchecked && i<myidx){
+                        if(!image_selected.includes(obj.id))
+                            image_selected.push(obj.id)
+                        $(obj).addClass('checked');
+                    }
+                });
+            }
 
         } else {
+            console.log("Clicked is checked");
             aa.removeClass('checked');
             var my_id=this.id;
 			var index = image_selected.indexOf(my_id);
 			if (index > -1) {
-			image_selected.splice(index, 1);
+			    image_selected.splice(index, 1);
 			}
         }
 	$('#display').html("ID of selected images :"+image_selected);
-    })
-
-///////////////////
-
-    $(".thumbnail").click(function() {
-        return false;
     }).dblclick(function() {
-        window.location = this.href;
+        console.log("Going to " + this.href);
+        window.location =  "{% url 'photoview' pk=9876543210 %}".replace('9876543210', this.id.slice(6)); //Remove "photo-" from the id to get the pk
         return false;
     });
-})</script>
+
+$('#selectall').click(function(e) {
+    console.log("Select all");
+    $('.thumbnail').each(function(){
+        if(!image_selected.includes(this.id))
+            image_selected.push(this.id);
+        $(this).addClass('checked');
+    });
+});
+
+$('#selectnone').click(function(e) {
+    console.log("Select all");
+    $('.thumbnail').each(function(){
+        var index = image_selected.indexOf(this.id);
+        if (index > -1) {
+            image_selected.splice(index, 1);
+        }
+        $(this).removeClass('checked');
+    });
+});
+
+$('#createalbum').click(function(e) {
+    console.log("create album");
+});
+
+$('#setdatelocation').click(function(e) {
+    console.log("Set date location");
+});
+
+
+</script>
 {% endblock %}
