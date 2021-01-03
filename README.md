@@ -10,13 +10,14 @@ Django-based website started December 2020.
 
 ## TODO list
 
-- Select photos in myphotos and add them to album
-- Select photos in myphotos or in album edit view 
-  to set metadata for all
- - When one deletes a Photo, remove the file using signals (e.g. https://stackoverflow.com/questions/16041232/django-delete-filefield)
+ - Add selected photos to album
+ - Select photos in album edit view to set metadata for all
+ - Allow image reordering in an album (uploaded timestamp, filename, moving one file, from datetime)
+ - Search/select photos by location, by people
+ - Map of all location, select region and timeframe to find photos that can be used to create an album
  - Create account/Edit account views
  - Create group
- - Access management views for photos, albums and groups
+ - Access management views for photos, albums and groups, but also for location and people
  - Dynamic search box for location
  - Better date widgets
  - Create/Edit metadata in Create/Update photo view
@@ -25,4 +26,8 @@ Django-based website started December 2020.
  - Make that nice with CSS
  - Implement undo function ?
  - Beware of editing conflict (timer in js to check data was not modified, or lock, or check on submit)
- 
+ - Use Django REST for AJAX API ?
+ - Use CSRF cookie in views for ajax requests (add photos to album, upload photos, update metadata of photos...)
+ - Detect faces, identify faces to people
+ - Be smart in location or people selection UI (put most used or more recently used locations on top, same for people)
+ - Fuse two identified persons into one (if two users have created the same person with different names, allow to fuse them)
