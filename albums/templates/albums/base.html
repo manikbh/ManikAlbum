@@ -17,23 +17,26 @@
 
 <body>
     <div id="header">
-        {% block header %}
-        <ul>
 
-              {% if user.is_authenticated %}
-
-                <li>{% blocktrans %}Logged in as {% endblocktrans %}<strong>{{ user.username }}</strong>.
-                    <a href="{% url 'logout' %}">Log out</a>.
-                </li>
-
-              {% else %}
+        <div>
+            <a href="{% url 'myalbums' %}" class="btn">My Albums</a>
+            <br><a href="{% url 'myphotos' %}" class="btn">My Photos</a>
+        </div>
+        <div class="head-center">
+            {% block headertext %}
+            <h1>ManikAlbum</h1>
+            {% endblock %}
+        </div>
+        {% if user.is_authenticated %}
+        <div class="head-right">{% blocktrans %}Logged in as {% endblocktrans %}<strong><a href="{% url 'account' %}">{{ user.username }}</a></strong>.
+                <br><a href="{% url 'logout' %}">Log out</a>.
+            </div>
+        {% else %}
+            <div class="head-right">
                 <a href="{% url 'login' %}" class="btn" role="button">Log in</a>
-                <a href="{% url 'signup' %}" class="btn" role="button">Sign up</a>
-              {% endif %}
-            <li><a href="{% url 'myalbums' %}" class="btn">My Albums</a></li>
-            <li><a href="{% url 'myphotos' %}" class="btn">My Photos</a></li>
-        </ul>
-        {% endblock %}
+                <br><a href="{% url 'signup' %}" class="btn" role="button">Sign up</a>
+            </div>
+        {% endif %}
     </div>
 
     <div id="content">

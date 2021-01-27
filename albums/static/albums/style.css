@@ -9,6 +9,11 @@ h2 {
 
 #header{
     border-style: double;
+    display: flex;                  /* establish flex container */
+    flex-direction: row;            /* default value; can be omitted */
+    flex-wrap: nowrap;              /* default value; can be omitted */
+    justify-content: space-between; /* switched from default (flex-start, see below) */
+    padding:3px;
 }
 
 #selectable{
@@ -49,9 +54,10 @@ img.thumbnail.checked {border:solid 2px red;background:#ffff00;}
 .editing h2{
     color: red;
     font-size: 2em;
-    margin-top: 0.2em;
     text-align: center;
-    border-bottom: 3px solid black ;
+    border-style: none;
+    /*margin-top: 0.2em;
+    border-bottom: 3px solid black ;*/
 }
 .editing td{
     border: 1px solid #ddd;
@@ -105,6 +111,21 @@ title {
     font-size: 2em;
 }
 
+.description {
+    color: blue;
+    font-size: 1.2em;
+}
+
+.location{
+    font-color: darkgreen;
+    font-weight: bold;
+    color: darkgreen;
+}
+
+.date{
+    font-weight: bold;
+}
+
 .btn-cancel {
     border-color: green;
 }
@@ -132,4 +153,29 @@ title {
     border: 2px solid #000;
     border-color: black;
     background-color: white;
+}
+
+.success-txt{
+    font-color: green;
+    font-weight: bold;
+    color: green;
+}
+
+.error-txt{
+    font-color: red;
+    font-weight: bold;
+    color: red;
+}
+
+img.photo_img{
+    max-width: 90vw;
+    height: 90vh;
+}
+
+.photo{
+    display: flex;                  /* establish flex container */
+    flex-direction: row;            /* default value; can be omitted */
+    flex-wrap: nowrap;              /* default value; can be omitted */
+    justify-content: space-between; /* switched from default (flex-start, see below) */
+    padding:3px;
 }

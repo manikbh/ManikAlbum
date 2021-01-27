@@ -41,6 +41,7 @@ urlpatterns = [
     # path('albumview/<int:pk>/<int:photo_index>/', views.albumDetailView.as_view(), name='albumviewphoto'),
     path('albumedit/<int:pk>/', views.AlbumCreateUpdateView.as_view(), name='albumedit'),
     path('albumcreate/', views.AlbumCreateUpdateView.as_view(), name='albumcreate'),
+    path('albumcreate2/', views.albumCreateAPI, name='albumcreate2'),
     path('albumdelete/<int:pk>/', views.AlbumDeleteView.as_view(), name='albumdelete'),
     path('personview/<int:pk>/', views.PersonDetailView.as_view(), name='personview'),
     path('personedit/<int:pk>/', views.PersonCreateUpdateView.as_view(), name='personedit'),

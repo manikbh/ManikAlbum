@@ -15,7 +15,8 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
+from django.views.decorators.http import require_http_methods
 from django.views.generic import ListView, CreateView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -26,6 +27,7 @@ from django.urls import reverse
 from PIL import Image, ExifTags
 from datetime import datetime
 import os
+import json
 
 from urllib.parse import urlparse
 
@@ -198,6 +200,28 @@ class AlbumCreateUpdateView(LoginRequiredMixin, UpdateView):
         except AttributeError:
             return None
 
+@require_http_methods(["POST"])
+def albumCreateAPI(request):
+    is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+    if not is_ajax:
+        return HttpResponseBadRequest
+    data = json.load(request)
+    print("Received create album request: " + repr(data))
+    albumname = "DefaultName"
+    if albumname in data:
+        albumname = data['albumname']
+    if 'images' not in data:
+        return HttpResponseBadRequest
+    try:
+        if Album.objects.filter(name=albumname).count() > 0:
+            return JsonResponse({'error': "album name already exists", })
+        album = Album(name=albumname, owner=request.user)
+        album.save()
+        album.photos.add(*[int(p[6:]) for p in data['images']])
+        album.save()
+        return JsonResponse({'success': "album %s was created"%albumname, })
+    except:
+        return JsonResponse({'error': "album creation failed on server", })
 
 class PhotoCreateUpdateView(LoginRequiredMixin, UpdateView):
     model = Photo
