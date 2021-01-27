@@ -5,8 +5,29 @@
 ManikAlbum - Album {{album.name}}
 {% endblock %}
 
+{% block headertext %}
+    <h1>Album {{album.name}}</h1>
+{% endblock %}
+
 {% block content %}
 {% if user.is_authenticated %}
+    Description: <div class="description">{% if album.description %}{{album.description}}{% endif %}</div>
+    Date:
+    {% if album.startTime %}
+        <div class="date">{{album.startTime}}
+        {% if album.endTime %}
+            → {{album.endTime}}
+        {% endif %}
+        </div>
+    {% else %}
+        <br>
+    {% endif %}
+    Location:
+    <div class="location">
+        {% for loc in album.location.all %}
+            {{loc.name}},
+        {% endfor %}
+    </div>
     <div class="thumbnails">
         {% for photo in album.photos.all %}
         <p>

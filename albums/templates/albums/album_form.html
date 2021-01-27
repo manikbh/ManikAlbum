@@ -4,8 +4,11 @@
 ManikAlbum - Edit Album
 {% endblock %}
 
+{% block headertext %}
+<div class="editing"><h2>Edit album <b>{{album.name}}</b></h2></div>
+{% endblock %}
+
 {% block content %}
-    <div class="editing"><h2>Edit Album</h2>
     <form action="" method="post">
         {% csrf_token %}
         <table>

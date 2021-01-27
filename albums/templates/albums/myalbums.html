@@ -5,10 +5,13 @@
 ManikAlbum - My Albums
 {% endblock %}
 
+{% block headertext %}
+    <h1>My Albums</h1>
+{% endblock %}
+
 {% block content %}
 
 {% if user.is_authenticated %}
-    <p>{% translate "Bienvenue" %} {{ user.get_username }}. </p>
     {% if album_list %}
         <ul>
         {% for album in album_list %}

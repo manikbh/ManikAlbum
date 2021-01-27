@@ -5,6 +5,10 @@
 ManikAlbum - Location {{location.name}}
 {% endblock %}
 
+{% block headertext %}
+    <h1>Location: {{location.name}}</h1>
+{% endblock %}
+
 {% block content %}
 {% if user.is_authenticated %}
     <div class="location">

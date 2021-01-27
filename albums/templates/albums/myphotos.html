@@ -4,7 +4,9 @@
 {% block title %}
 ManikAlbum - My Photo
 {% endblock %}
-
+{% block headertext %}
+        <h1>My Photos</h1>
+{% endblock %}
 {% block content %}
 
 
@@ -23,6 +25,7 @@ ManikAlbum - My Photo
     <option value="second">Second</option>
 </select>
 <input type="search" name="location" value="Location" id="locationinput">
+<div id="status_text"></div>
     {% if photo_list %}
         <div id="selectable" class=thumbnails">
         {% for photo in photo_list %}
@@ -123,10 +126,36 @@ $('#selectnone').click(function(e) {
 
 $('#createalbum').click(function(e) {
     console.log("create album");
+    fetch("{%url 'albumcreate2'%}", {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers:{
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+          'X-CSRFToken': "{{ csrf_token }}",
+      },
+      body: JSON.stringify({'images':image_selected}) //JavaScript object of data to POST
+    })
+    .then(response => {
+        return response.json() //Convert response to JSON
+    })
+    .then(data => {
+        //Perform actions with the response data from the view
+        if('success' in data){
+            document.getElementById('status_text').innerHTML = "<p class='success-txt'>Album created successfully</p>";
+        }else{
+            if('error' in data){
+                document.getElementById('status_text').innerHTML = "<p class='error-txt'>Album could not be created:"+data['error']+"</p>";
+            }else{
+                document.getElementById('status_text').innerHTML = "<p class='error-txt'>Album could not be created (unknown error)</p>";
+            }
+        }
+    })
 });
 
 $('#setdatelocation').click(function(e) {
     console.log("Set date location");
+    // Date, time, precision, location and photo ids to a JSON view ?
 });
 
 
