@@ -29,11 +29,11 @@
         </div>
         {% if user.is_authenticated %}
         <div class="head-right">{% blocktrans %}Logged in as {% endblocktrans %}<strong><a href="{% url 'account' %}">{{ user.username }}</a></strong>.
-                <br><a href="{% url 'logout' %}">Log out</a>.
+                <br><a href="{% url 'maniklogout' %}">Log out</a>.
             </div>
         {% else %}
             <div class="head-right">
-                <a href="{% url 'login' %}" class="btn" role="button">Log in</a>
+                <a href="{% url 'maniklogin' %}" class="btn" role="button">Log in</a>
                 <br><a href="{% url 'signup' %}" class="btn" role="button">Sign up</a>
             </div>
         {% endif %}

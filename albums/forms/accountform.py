@@ -20,8 +20,7 @@ from django.db import transaction
 
 from albums.models import User
 
-class SignUpForm(UserCreationForm):
-    email = forms.EmailField()
+class AccountForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
 

@@ -15,15 +15,16 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from django.urls import path
+import django.contrib.auth.views as auth_views
 
 from . import views
 
 urlpatterns = [
     path('', views.AlbumListView.as_view(), name='index'),
-    path('signup/', views.account, name='signup'),
-    path('account/', views.account, name='account'),
-    path('login/', views.account, name='maniklogin'),
-    path('logout/', views.account, name='maniklogout'),
+    path('signup/', views.SignUpView.as_view(), name='signup'),
+    path('account/', views.AccountView.as_view(), name='account'),
+    path('login/', auth_views.LoginView.as_view(), {'next_page': '/'}, name='maniklogin'),
+    path('logout/', auth_views.LogoutView.as_view(), {'next_page': '/'}, name='maniklogout'),
     path('group', views.group, name='group'),
     #  path('photo/<int:photo_id>', views.photo, name='photo'),
     path('photo/<int:pk>', views.PhotoDetailView.as_view(), name='photoview'),

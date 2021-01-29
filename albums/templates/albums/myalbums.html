@@ -23,7 +23,7 @@ ManikAlbum - My Albums
     {% endif %}
     <div class="edit-btn"><a href="{% url 'albumcreate' %}">Create new album...</a></div>
 {% else %}
-<p>{% blocktrans %}"You are not logged in. Please <a href="/connect">connect</a> or create an account !" {% endblocktrans %} {{ user.get_username }}. </p>
+<p>{% blocktrans %}"You are not logged in. Please <a href="/login/">connect</a> or create an account !" {% endblocktrans %} {{ user.get_username }}. </p>
 
 {% endif %}
 

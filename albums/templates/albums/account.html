@@ -1,17 +1,12 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title></title>
-  </head>
-  <body>
-    <p><br>
-    </p>
-     	<div class="header">
-				<p>Header</p>
-			</div>
-			<div class="content">
-				<p>Content</p>
-			</div>
-  </body>
-</html>
+{% extends 'albums/base.html' %}
+
+{% block title %}Account{% endblock %}
+
+{% block content %}
+  <h2>Account</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}

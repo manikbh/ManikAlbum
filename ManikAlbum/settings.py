@@ -148,3 +148,7 @@ MEDIA_URL = '/media/'
 
 
 AUTH_USER_MODEL = "albums.User"
+
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'

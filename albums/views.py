@@ -18,8 +18,14 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.generic import ListView, CreateView, DetailView
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+
+# Forms
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.template import RequestContext
 from django.urls import reverse
@@ -34,6 +40,7 @@ from urllib.parse import urlparse
 from .models import Album, User, Photo, Location, Person, Metadata
 from .forms.SignUpForm import SignUpForm
 from .forms.photouploadform import PhotoUploadForm
+from .forms.accountform import AccountForm
 
 
 def index(request):
@@ -46,14 +53,61 @@ def index(request):
 class SignUpView(CreateView):
     model = User
     form_class = SignUpForm
-    template_name = 'registration/signup_form.html'
+    template_name = 'albums/signup.html'
 
 
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        return redirect('myAlbums')
+        return redirect(reverse('myalbums'))
 
+
+class AccountView(UpdateView, LoginRequiredMixin):
+    model = User
+    fields = ['username', 'first_name', 'last_name', 'email', 'description'] #
+    #form_class = AccountForm
+    template_name = 'albums/account.html'
+    success_url = reverse_lazy('myalbums')  # TODO MyLocations, list of all locations the user has access to
+    def get_object(self, queryset=None):
+        try:
+            return User.objects.get(pk=self.request.user.pk)
+        except AttributeError:
+            return None
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+
+# def login(request):
+#     username = request.POST['username']
+#     password = request.POST['password']
+#     user = authenticate(request, username=username, password=password)
+#     if user is not None:
+#         login(request, user)
+#         # Redirect to a success page.
+#         return HttpResponseRedirect(reverse('myAlbums'))
+#     else:
+#         return HttpResponse
+#
+#
+# def logout_view(request):
+#     logout(request)
+#     # Redirect to a success page.
+
+# Return an 'invalid login' error message.
+#
+# def signup(request):
+#     if request.method == 'POST':
+#         form = UserCreationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             username = form.cleaned_data.get('username')
+#             raw_password = form.cleaned_data.get('password1')
+#             user = authenticate(username=username, password=raw_password)
+#             login(request, user)
+#             return redirect('home')
+#     else:
+#         form = UserCreationForm()
+#     return render(request, 'signup.html', {'form': form})
 
 # Managing your account (mail, password, name)
 @login_required
@@ -107,6 +161,8 @@ class AlbumListView(ListView):
     context_object_name = 'album_list'
 
     def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return []
         return Album.objects.filter(owner=self.request.user).order_by('name')  # .filter(status__exact='o')
 
 
@@ -146,12 +202,6 @@ class LocationDetailView(DetailView):
 class PersonDetailView(DetailView):
     model = Person
     template_name = "albums/person.html"
-
-
-# Forms
-from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class LocationCreateUpdateView(LoginRequiredMixin, UpdateView):

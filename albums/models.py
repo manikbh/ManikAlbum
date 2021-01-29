@@ -30,7 +30,7 @@ from datetime import datetime
 class User(AbstractUser):
     description = models.TextField(max_length=1000,blank=True,null=True)
     personalUrl = models.URLField(blank=True, null=True)
-
+    is_admin = models.BooleanField('admin status', default=False)
     def __str__(self):
         return AbstractUser.__str__(self)
 
