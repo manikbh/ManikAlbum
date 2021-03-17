@@ -72,6 +72,8 @@ class Metadata(models.Model):
     #TODO Exif metadata fields ? Class EXIF from django-exiffield ?
     persons = models.ManyToManyField('Person', through='PersonPresence')
     locations = models.ManyToManyField('Location', through='LocationPresence')
+    coords = models.CharField(blank=True, max_length=100, null=True)  # GPS coords, for EXIF-filled data (no "Location")
+
     def __str__(self):
         return "Meta: " + self.name
 
@@ -199,14 +201,14 @@ class Album(models.Model):
     # If generated, key used for sharing the photo as a URL
     urlkey = models.CharField(null=True, max_length=30, default=generateRandomKey)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="owner")
-    admins = models.ManyToManyField(User, related_name="admins")
-    members = models.ManyToManyField(User, related_name="members")
+    admins = models.ManyToManyField(User, related_name="admins", blank=True)
+    members = models.ManyToManyField(User, related_name="members", blank=True)
     # Content
-    photos = models.ManyToManyField(Photo, through=PhotoIndex)
+    photos = models.ManyToManyField(Photo, through=PhotoIndex, blank=True)
     # Metadata
     name = models.CharField(null=True, max_length=150)
-    description = models.TextField(null=True, max_length=10000)
-    location = models.ManyToManyField(Location)
+    description = models.TextField(null=True, blank=True, max_length=10000)
+    location = models.ManyToManyField(Location, blank=True)
     startTime = models.DateField(null=True, blank=True)
     endTime = models.DateField(null=True, blank=True)
 
